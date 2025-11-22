@@ -1,5 +1,5 @@
 import JobsModel from "../models/jobs.model.js";
-import EmailService from "../services/emailService.js";
+import EmailService from "../services/emailservice.js";
 
 class Applycontroller {
     async apply(req, res) {
