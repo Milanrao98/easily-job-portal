@@ -16,11 +16,11 @@ import CreateJobController from "./src/controllers/createJob.controller.js";
 import UpdateJobController from "./src/controllers/updateJob.controller.js";
 import DeleteJobController from "./src/controllers/deleteJob.controller.js";
 import cookieParser from "cookie-parser";
-import lastVisit from "./src/middleware/lastVisit.js";
+import lastVisit from "./src/middleware/lastvisit.js";
 
 
 const app = express();
-
+app.set("trust proxy", 1);
 // ---------- Multer setup ----------
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -33,13 +33,12 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // ---------- Middleware ----------
-app.use(
-    session({
-        secret: "milanrao",
-        resave: false,
-        saveUninitialized: false,
-    })
-);
+app.use(session({
+    secret: "milanrao",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }  // Set true only when using HTTPS
+}));
 
 app.use(expressLayouts);
 app.set("layout", "layouts/layout");
@@ -99,6 +98,8 @@ app.get("/job/update/:id", isLoggedIn, UpdateJobController.showUpdateForm);
 app.post("/job/update/:id", isLoggedIn, upload.single("logo"), UpdateJobController.updateJob);
 app.get("/job/delete/:id", isLoggedIn, DeleteJobController.deleteJob);
 
-app.listen(3200, () => {
-    console.log("Server is listening at 3200");
+const PORT = process.env.PORT || 3200;
+app.listen(PORT, () => {
+    console.log("Server is running on port", PORT);
 });
+
